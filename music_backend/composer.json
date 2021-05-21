@@ -1,0 +1,6 @@
+{
+    "require": {
+        "phpmailer/phpmailer": "^6.0",
+        "redjanym/php-firebase-cloud-messaging": "^1.1"
+    }
+}

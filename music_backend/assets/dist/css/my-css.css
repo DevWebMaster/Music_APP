@@ -1,0 +1,36 @@
+.tab-kind-triggers
+{
+	float: left;
+	margin : 0 10px 0 0;
+	padding: 15px;
+	font-size: 15px;
+	background: white;
+	border: solid 1px;
+	border-bottom: 0;
+	border-radius: 15px 15px 0 0;
+	font-weight: 700;
+}
+
+.tab-kind-triggers:hover
+{
+	background: #c3dbf5;
+}
+
+.tab-kind-triggers-active
+{
+	background: #c3dbf5!important;
+}
+
+.sync4-item-files tr:last-child .music-file {
+	display: none;
+}
+.sync4-item-files tr:last-child .music-edit {
+	display: none;
+}
+.sync4-item-files td > div {
+	display: table;
+}
+.sync4-item-files td > div label {
+	display: table-cell;
+	vertical-align: middle;
+}
