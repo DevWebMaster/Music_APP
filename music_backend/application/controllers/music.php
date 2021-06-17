@@ -348,11 +348,84 @@ class Music extends BaseController
 
         echo json_encode(array('status' => $status, 'msg' => $msg, 'result' => $data));
     }
+    public function getRecentList() {
+        $uid = $this->input->post('uid');
+        $searchText = $this->input->post('searchText');
+        $data['searchText'] = $searchText;
+
+        $this->load->library('pagination');
+
+        $count = $this->music_model->musicListingCount($searchText);
+
+        $result_set = array();
+        if($count > 0){
+            if($count > 5){
+                $data['musicRecords'] = $this->music_model->musicRecentListing($uid, $searchText);
+            }else{
+                $data['musicRecords'] = $this->music_model->musicListing($uid, $searchText);
+            }
+            if (is_array($data['musicRecords'])) {
+                foreach ($data['musicRecords'] as $music) {
+                    if ($music->music && !$music->duration) {
+                        $duration = $this->mp3file->getDurationEstimate($music->music);
+                        $musicData = array('duration' => $duration);
+                        $this->music_model->editMusic($musicData, $music->id);
+                    }
+                }
+            }
+            $status = "success";
+            $msg = "Success!";
+        }else {
+            $status = "failed";
+            $msg = "music not existing.";
+        }
+
+        echo json_encode(array('status' => $status, 'msg' => $msg, 'result' => $data));
+    }
 
     public function getTopMusicList() {
         $uid = $this->input->post('uid');
         $this->load->model("playlog_model");
         $topPlayLogs = $this->playlog_model->playlogListing();
+
+        $topTenMusicIds = array();
+        if ($topPlayLogs && is_array($topPlayLogs)) {
+            foreach ($topPlayLogs as $log) {
+                $topTenMusicIds[] = $log->music_id;
+            }
+        } else {
+            echo json_encode(array('status' => "failed", 'msg' => "Can't find the play logs"));
+            exit;
+        }
+
+        $topTenMusicLists = $this->music_model->musicListing($uid, '', $topTenMusicIds);
+        if ($topTenMusicLists) {
+            if (is_array($topTenMusicLists)) {
+                $newList = array();
+                foreach ($topTenMusicLists as $music) {
+                    $newList[$music->id] = $music;
+                }
+
+                $topTenMusicLists = array_replace(array_flip($topTenMusicIds), $newList);
+
+                $newItems = array();
+                foreach ($topTenMusicLists as $item) {
+                    $newItems[] = $item;
+                }
+
+                $topTenMusicLists = $newItems;
+            }
+            echo json_encode(array('status' => "Success", 'result' => $topTenMusicLists));
+        } else {
+            echo json_encode(array('status' => "faile", 'msg' => "Can't find the Musics"));
+        }
+    }
+
+    public function getTopMusicsWithGenre() {
+        $uid = $this->input->post('uid');
+        $genreId = $this->input->post('genreId');
+        $this->load->model("playlog_model");
+        $topPlayLogs = $this->playlog_model->playlogListingWithGenre($genreId);
 
         $topTenMusicIds = array();
         if ($topPlayLogs && is_array($topPlayLogs)) {

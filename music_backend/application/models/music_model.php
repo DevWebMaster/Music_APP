@@ -76,7 +76,37 @@ class Music_model extends CI_Model
 
         return $result;
     }
+    function musicRecentListing($uid, $searchText = '', $is_admin = false)
+    {
+        $sql = "BaseTbl.id, BaseTbl.name, BaseTbl.description, BaseTbl.thumb, BaseTbl.music, BaseTbl.duration, BaseTbl.created_date, (select count(*) from tbl_likes Where music_id = BaseTbl.id and status = 1) as likes, (select count(*) from tbl_playlog Where music_id = BaseTbl.id) as playCounts, (select count(*) from tbl_comments Where music_id = BaseTbl.id and is_deleted = 0) as comment_count, GrTbl.name as genre, DjTbl.name as DJ";
 
+        if (!$is_admin) {
+            $sql .= ", (select count(*) from tbl_likes Where music_id = BaseTbl.id and user_id = $uid and status = 1) as is_liked";
+            $sql .= ", (select count(*) from tbl_playlist Where music_id = BaseTbl.id and user_id = $uid and status = 1) as is_playlist";
+        }
+        $this->db->select($sql);
+        $this->db->from($this->table_name . ' as BaseTbl');
+        $this->db->join($this->table_djs . ' as DjTbl', 'DjTbl.id = BaseTbl.dj','left');
+        $this->db->join($this->table_genres . ' as GrTbl', 'GrTbl.id = BaseTbl.genre','left');
+
+        if(!empty($searchText)) {
+            $likeCriteria = "BaseTbl.name  LIKE '%".$searchText."%'";
+            $this->db->where($likeCriteria);
+        }
+
+        $this->db->where('BaseTbl.isDeleted', 0);
+        $this->db->where('DjTbl.isDeleted', 0);
+        $this->db->where('GrTbl.isDeleted', 0);
+
+        $this->db->order_by('BaseTbl.created_date', 'desc');
+        $this->db->limit(5, 0);
+
+        $query = $this->db->get();
+        
+        $result = $query->result();    
+
+        return $result;
+    }
     function musicListingWithGenre($uid, $genreId, $searchText = '', $page = null, $segment = null)
     {
         $this->db->select("BaseTbl.id, BaseTbl.name, BaseTbl.description, BaseTbl.thumb, BaseTbl.music, BaseTbl.duration, DjTbl.name as DJ, DjTbl.avatar_url as djAvatar, GrTbl.name as genre, BaseTbl.created_date, (select count(*) from tbl_likes Where music_id = BaseTbl.id and status = 1) as likes, (select count(*) from tbl_likes Where music_id = BaseTbl.id and user_id = $uid and status = 1) as is_liked, (select count(*) from tbl_playlist Where music_id = BaseTbl.id and user_id = $uid and status = 1) as is_playlist, (select count(*) from tbl_playlog Where music_id = BaseTbl.id) as playCounts, (select count(*) from tbl_comments Where music_id = BaseTbl.id and is_deleted = 0) as comment_count");

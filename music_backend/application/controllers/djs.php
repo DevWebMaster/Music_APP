@@ -238,7 +238,7 @@ class Djs extends BaseController
      */
     function setProfile()
     {
-	header('Access-Control-Allow-Origin: *');
+    	header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
         $method = $_SERVER['REQUEST_METHOD'];
@@ -248,14 +248,14 @@ class Djs extends BaseController
 
         $this->load->model('customer_model');
 
-        $name = ucwords(strtolower($this->input->post('username')));
+        // $name = ucwords(strtolower($this->input->post('username')));
         $email = $this->input->post('email');
         $isDjs = $this->input->post('isDjs');
         $base64_image_tmp = $this->input->post('base64string');
 
-        $base64_image = explode(',', $base64_image_tmp);
+        $base64_image = explode(',', $base64_image_tmp)[1];
 	
-        $djsInfo = array('username'=>ucwords($name), 'isDjs'=>$isDjs, 'updated_at'=>date('Y-m-d H:i:s'));
+        $djsInfo = array('updated_at'=>date('Y-m-d H:i:s'));
 
         $uploaddir = 'assets/profile-avatars/';
         $dest_filename = md5(uniqid(rand(), true)) . '.jpg';
@@ -287,11 +287,96 @@ class Djs extends BaseController
         if($result == true)
         {
 	     $userinfo = $this->customer_model->getUserInfo1($email);
+            echo json_encode(array('status' => "success", 'msg' => "user profile avatar updated successfully", 'userInfo' => $userinfo));
+        }
+        else
+        {
+            echo json_encode(array('status' => "failed", 'msg' => "user profile avatar updation failed"));
+        } 
+    }
+    function setProfileInfo()
+    {
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        $method = $_SERVER['REQUEST_METHOD'];
+        if($method == "OPTIONS") {
+            die();
+        }
+
+        $this->load->model('customer_model');
+
+        $name = ucwords(strtolower($this->input->post('username')));
+        $email = $this->input->post('email');
+        $isDjs = $this->input->post('isDjs');
+        $enabledmail = $this->input->post('enabledmail');
+    
+        $djsInfo = array('username'=>ucwords($name), 'enabledmail'=>$enabledmail, 'isDjs'=>$isDjs, 'updated_at'=>date('Y-m-d H:i:s'));
+
+        if($email){
+            $user = $this->customer_model->getUserInfo1($email);
+        }else {
+            echo json_encode(array('status' => "failed", 'msg' => "Your email doesn't exist."));
+            exit(1);
+        }
+
+        if (!$user) {
+            echo json_encode(array('status' => "failed", 'msg' => "This user doesn't exist."));
+            exit(1);
+        }
+
+        $result = $this->customer_model->setProfile($djsInfo, $email); 
+        
+        if($result == true)
+        {
+         $userinfo = $this->customer_model->getUserInfo1($email);
             echo json_encode(array('status' => "success", 'msg' => "user profile updated successfully", 'userInfo' => $userinfo));
         }
         else
         {
             echo json_encode(array('status' => "failed", 'msg' => "user profile updation failed"));
+        } 
+    }
+    function setProfilePassword()
+    {
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        $method = $_SERVER['REQUEST_METHOD'];
+        if($method == "OPTIONS") {
+            die();
+        }
+
+        $this->load->model('customer_model');
+
+        $email = $this->input->post('email');
+        // $isDjs = $this->input->post('isDjs');
+        $password = $this->input->post('password');
+    
+        $djsInfo = array('password'=>getHashedPassword($password), 'updated_at'=>date('Y-m-d H:i:s'));
+
+        if($email){
+            $user = $this->customer_model->getUserInfo1($email);
+        }else {
+            echo json_encode(array('status' => "failed", 'msg' => "Your email doesn't exist."));
+            exit(1);
+        }
+
+        if (!$user) {
+            echo json_encode(array('status' => "failed", 'msg' => "This user doesn't exist."));
+            exit(1);
+        }
+
+        $result = $this->customer_model->setProfile($djsInfo, $email); 
+        
+        if($result == true)
+        {
+         $userinfo = $this->customer_model->getUserInfo1($email);
+            echo json_encode(array('status' => "success", 'msg' => "user password updated successfully", 'userInfo' => $userinfo));
+        }
+        else
+        {
+            echo json_encode(array('status' => "failed", 'msg' => "user password updation failed"));
         } 
     }
     function deleteCustomer()

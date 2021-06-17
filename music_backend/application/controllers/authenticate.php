@@ -89,7 +89,7 @@ class Authenticate extends CI_Controller
     {
         $this->load->library('form_validation');
         $this->form_validation->set_rules('email', 'Email', 'required|valid_email|max_length[128]|xss_clean|trim');
-        $this->form_validation->set_rules('password', 'Password', 'required|max_length[32]|');
+        // $this->form_validation->set_rules('password', 'Password', 'required|max_length[32]|');
 
         if($this->form_validation->run() == FALSE)
         {
@@ -99,26 +99,47 @@ class Authenticate extends CI_Controller
         {
             $email = $this->input->post('email');
             $password = $this->input->post('password');
-            // $FCM = $this->input->post('FCM_token');
+            $FCM = $this->input->post('token');
  
             $result = $this->customer_model->login($email, $password);
 
             if ($result) {
-                // if($FCM != ''){
-                // $check = $this->db->get_where('userFCMToken',array("userId"=>$result->id))->row_array();
-                //     if(!empty($check))
-                //     {
-                //         $this->db->update('userFCMToken',array('Token'=>$FCM),array('userId'=>$result->id));
-                //     }
-                //     else{
-                //         $this->db->insert('userFCMToken',array('userId'=>$result->id,'Token'=>$FCM));
-                //     }
+                if($FCM != ''){
+                    $check = $this->db->get_where('tbl_device_tokens',array("id"=>$result->id))->row_array();
+                    if(!empty($check))
+                    {
+                        $this->db->update('tbl_device_tokens',array('token'=>$FCM),array('id'=>$result->id));
+                    }
+                    else{
+                        $this->db->insert('tbl_device_tokens',array('id'=>$result->id,'token'=>$FCM));
+                    }
                 
-                // }
+                }
                 
                 echo json_encode(array('status' => "success", 'msg' => "Login Success", 'userInfo' => $result));
             } else {
-                echo json_encode(array('status' => "failed", 'msg' => "Email or password mismatch"));
+                if($FCM != '' && $email != '') {
+                    $name = ucwords(strtolower(explode('@', $email)[0]));
+                    $checkSameEmail = $this->customer_model->checkEmailExists($email);
+                    /* Register new user */
+                    if (!$checkSameEmail) {
+                        $userInfo = array('username' => $name, 'email' => $email, /*'isDjs'=>$dj,*/ 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s'));
+
+                       $insert_id = $this->customer_model->register($userInfo);
+
+                       $this->db->insert('tbl_device_tokens',array('id'=>$insert_id,'token'=>$FCM));
+
+                       $result = $this->customer_model->getExitUser($email, $FCM);
+
+                        echo json_encode(array('status' => "success", 'msg' => "Login Success", 'userInfo' => $result));
+                    } else {
+                        $result = $this->customer_model->getExitUser($email, $FCM);
+                        echo json_encode(array('status' => "success", 'msg' => "Login Success", 'userInfo' => $result));
+                    }
+                }else{
+                    echo json_encode(array('status' => "failed", 'msg' => "Email or password mismatch"));
+                }
+                
             }
         }
 

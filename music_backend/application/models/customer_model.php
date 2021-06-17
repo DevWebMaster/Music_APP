@@ -19,6 +19,17 @@ class Customer_model extends CI_Model
         return $query->result();
     }
     
+    function getExitUser($email, $token)
+    {
+        $this->db->select('a1.*');
+        $this->db->from('tbl_customers as a1');
+        $this->db->join('tbl_device_tokens as a2', 'a1.id = a2.id', 'left');
+        $this->db->where('a1.email', $email);
+        $this->db->where('a2.token', $token);
+
+        $query = $this->db->get();
+        return $query->result();
+    }
     
     /**
      * This function is used to add new user to system

@@ -37,6 +37,29 @@ class Playlog_model extends CI_Model
         return $result;
     }
 
+    function playlogListingWithGenre($genreId)
+    {
+        $this->db->select('music_id, COUNT(*) as count');
+        $this->db->from($this->table_name);
+        $this->db->join($this->table_music . ' as MusicTbl', 'MusicTbl.id = music_id');
+        $this->db->join($this->table_djs . ' as DjTbl', 'DjTbl.id = MusicTbl.dj','left');
+        $this->db->join($this->table_genres . ' as GrTbl', 'GrTbl.id = MusicTbl.genre','left');
+
+        $this->db->where('MusicTbl.isDeleted', 0);
+        $this->db->where_not_in('DjTbl.isDeleted', 1);
+        $this->db->where_not_in('GrTbl.isDeleted', 1);
+        $this->db->where('MusicTbl.genre', $genreId);
+
+        $this->db->group_by('music_id');
+        $this->db->order_by('count', 'desc');
+        $this->db->limit(10);
+
+        $query = $this->db->get();
+
+        $result = $query->result();
+        return $result;
+    }
+
     /**
      * This function is used to add new playlog to system
      * @return number $insert_id : This is last inserted id
