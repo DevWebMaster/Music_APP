@@ -72,6 +72,12 @@ $route['addNewGenre'] = "genres/addNewGenres";
 $route['editGenre'] = "genres/editGenres";
 $route['deleteGenre'] = "genres/deleteGenres";
 
+$route['forumListing'] = 'forum/forumListing';
+$route['forumListing/(:num)'] = "forum/forumListing/$1";
+$route['addNewForum'] = "forum/addNewForum";
+$route['editForum'] = "forum/editForum";
+$route['deleteForum'] = "forum/deleteForum";
+
 $route['djsListing'] = 'djs/djsListing';
 $route['djsListing/(:num)'] = "djs/djsListing/$1";
 $route['addNewDJ'] = "djs/addNewDJs";
@@ -104,6 +110,7 @@ $route['register'] = 'authenticate/register';
 $route['login'] = 'authenticate/login';
 $route['resetpassword'] = 'authenticate/resetPassword';
 
+$route['getforumlist'] = 'forum/getForumList';
 $route['getgenreslist'] = 'genres/getGenresList';
 $route['getdjslist'] = 'djs/getDJsList';
 $route['getprofile'] = 'djs/getProfile';

@@ -140,6 +140,12 @@
                       <span>Music List</span>
                   </a>
               </li>
+              <li class="treeview">
+                  <a href="<?php echo base_url(); ?>index.php/forumListing">
+                      <i class="fa fa-users"></i>
+                      <span>Forum List</span>
+                  </a>
+              </li>
           </ul>
         </section>
         <!-- /.sidebar -->
