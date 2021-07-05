@@ -141,9 +141,9 @@
                   </a>
               </li>
               <li class="treeview">
-                  <a href="<?php echo base_url(); ?>index.php/forumListing">
+                  <a href="<?php echo base_url(); ?>index.php/libraryListing">
                       <i class="fa fa-users"></i>
-                      <span>Forum List</span>
+                      <span>Library List</span>
                   </a>
               </li>
           </ul>

@@ -1,15 +1,15 @@
 <?php if(!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Forum_model extends CI_Model
+class Library_model extends CI_Model
 {
-    public $table_name = 'tbl_forum_list';
+    public $table_name = 'tbl_library';
 
     /**
-     * This function is used to get the forum listing count
+     * This function is used to get the library listing count
      * @param string $searchText : This is optional search text
      * @return number $count : This is row count
      */
-    function forumListingCount($searchText = '')
+    function libraryListingCount($searchText = '')
     {
         $this->db->select('BaseTbl.id, BaseTbl.name');
         $this->db->from($this->table_name . ' as BaseTbl');
@@ -26,15 +26,15 @@ class Forum_model extends CI_Model
     }
     
     /**
-     * This function is used to get the forum listing count
+     * This function is used to get the library listing count
      * @param string $searchText : This is optional search text
      * @param number $page : This is pagination offset
      * @param number $segment : This is pagination limit
      * @return array $result : This is result
      */
-    function forumListing($searchText = '', $page = null, $segment = null)
+    function libraryListing($searchText = '', $page = null, $segment = null)
     {
-        $this->db->select('BaseTbl.id, BaseTbl.name, BaseTbl.contents');
+        $this->db->select('BaseTbl.id, BaseTbl.name, BaseTbl.thumb_img');
         $this->db->from($this->table_name . ' as BaseTbl');
 
         if(!empty($searchText)) {
@@ -53,13 +53,13 @@ class Forum_model extends CI_Model
     }
 
     /**
-     * This function is used to add new forum to system
+     * This function is used to add new library to system
      * @return number $insert_id : This is last inserted id
      */
-    function addNewForum($forumInfo)
+    function addNewLibrary($libraryInfo)
     {
         $this->db->trans_start();
-        $this->db->insert($this->table_name, $forumInfo);
+        $this->db->insert($this->table_name, $libraryInfo);
         
         $insert_id = $this->db->insert_id();
         
@@ -69,16 +69,16 @@ class Forum_model extends CI_Model
     }
     
     /**
-     * This function used to get forum information by id
-     * @param number $forumId : This is forum id
-     * @return array $result : This is forum information
+     * This function used to get library information by id
+     * @param number $libraryId : This is library id
+     * @return array $result : This is library information
      */
-    function getForumInfo($forumId)
+    function getLibraryInfo($libraryId)
     {
         $this->db->select('id');
         $this->db->from($this->table_name);
         $this->db->where('isDeleted', 0);
-        $this->db->where('id', $forumId);
+        $this->db->where('id', $libraryId);
         $query = $this->db->get();
         
         return $query->result();
@@ -86,14 +86,14 @@ class Forum_model extends CI_Model
     
     
     /**
-     * This function is used to update the forum information
-     * @param array $forumInfo : This is forum updated information
-     * @param number $forumId : This is forum id
+     * This function is used to update the library information
+     * @param array $libraryInfo : This is library updated information
+     * @param number $libraryId : This is library id
      */
-    function editForum($forumInfo, $forumId)
+    function editLibrary($libraryInfo, $libraryId)
     {
-        $this->db->where('id', $forumId);
-        $this->db->update($this->table_name, $forumInfo);
+        $this->db->where('id', $libraryId);
+        $this->db->update($this->table_name, $libraryInfo);
         
         return TRUE;
     }
@@ -101,14 +101,14 @@ class Forum_model extends CI_Model
     
     
     /**
-     * This function is used to delete the forum information
-     * @param number $forumId : This is forum id
+     * This function is used to delete the library information
+     * @param number $libraryId : This is library id
      * @return boolean $result : TRUE / FALSE
      */
-    function deleteForum($forumId, $forumInfo)
+    function deleteLibrary($libraryId, $libraryInfo)
     {
-        $this->db->where('id', $forumId);
-        $this->db->update($this->table_name, $forumInfo);
+        $this->db->where('id', $libraryId);
+        $this->db->update($this->table_name, $libraryInfo);
         
         return $this->db->affected_rows();
     }
