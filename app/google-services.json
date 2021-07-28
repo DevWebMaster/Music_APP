@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "274299446199",
+    "project_id": "unwiind-b1065",
+    "storage_bucket": "unwiind-b1065.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:274299446199:android:b3fe27d7b3d29144053e32",
+        "android_client_info": {
+          "package_name": "com.happy.Unwiind"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "274299446199-74u86ue64cdfm7q4q88eeqlia9edb6k5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.happy.Unwiind",
+            "certificate_hash": "03e424328d602f46934e17275e40a804c10eb919"
+          }
+        },
+        {
+          "client_id": "274299446199-j3gm4jpqaqq821k3k6jpcddi2qa3v5oq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvEjJt7KFJuSN0Ijy1dNQERD2oQ-z68bQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "274299446199-j3gm4jpqaqq821k3k6jpcddi2qa3v5oq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

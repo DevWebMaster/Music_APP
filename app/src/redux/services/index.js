@@ -75,12 +75,32 @@ class AxiosService {
     return axios.post(DEV.setProfile, ...args)
   }
 
+  setProfileInfo(...args) {
+    return axios.post(DEV.setProfileInfo, ...args)
+  }
+
+  setProfilePassword(...args) {
+    return axios.post(DEV.setProfilePassword, ...args)
+  }
+
   getMusicInfo(...args) {
     return axios.post(DEV.getMusicInfo, ...args)
   }
+
+  getRecentList(...args) {
+    return axios.post(DEV.getRecentList, ...args)
+  }
+
+  getRecommendList(...args) {
+    return axios.post(DEV.getRecommendList, ...args)
+  }
+
+  getLibraryList(...args) {
+    return axios.post(DEV.getLibraryList, ...args)
+  }
 }
 
-export const Axios = () => {
+export const useApi = () => {
   return new AxiosService()
 }
 

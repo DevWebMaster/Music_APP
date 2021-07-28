@@ -1,10 +1,10 @@
 import produce from 'immer'
 
 const initialState = {
-    isWelcome : false, 
-    user : null ,
-    email : null ,
-    token : null ,
+  isWelcome: false,
+  user: null,
+  email: null,
+  token: null,
 }
 
 export default function reducer(state = initialState, action) {
